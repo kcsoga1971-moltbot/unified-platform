@@ -8,6 +8,9 @@ export default {
     integrationCenter: 'Integration Center',
     switchToRd: 'Switch to R&D Center',
     switchToOps: 'Switch to Operations Center',
+    crnCenter: 'Nursing Center',
+    patientCenter: 'Patient Portal',
+    switchToCrn: 'Switch to Nursing Center',
     unifiedDashboard: 'Unified Dashboard',
     productLifecycle: 'Product Lifecycle',
     rdProgress: 'R&D Progress',
@@ -205,6 +208,17 @@ export default {
     aiInsights: 'AI Insights',
     admin: 'Admin',
     userMgmt: 'User Management',
+    // Nursing Center (CRN)
+    crnPatients: 'Patient Management',
+    crnCreateTask: 'Create Task',
+    crnAssignEducation: 'Assign Education',
+    crnCalendar: 'Calendar',
+    crnNotifications: 'Notifications',
+    // Patient Portal
+    patientHistory: 'Health History',
+    patientEducation: 'Education Materials',
+    patientBodyMap: 'Body Map',
+    patientVitals: 'Vitals',
     // Integration
     unifiedDashboard: 'Unified Dashboard',
     productLifecycle: 'Product Lifecycle',
@@ -271,6 +285,8 @@ export default {
       warehouse: 'Warehouse Manager',
       finance: 'Finance',
       compliance: 'Compliance Officer',
+      crn: 'Clinical Research Nurse',
+      patient: 'Patient',
     },
     roleDescriptions: {
       boss: 'Global overview — R&D progress + sales performance + P&L reports',
@@ -286,6 +302,8 @@ export default {
       warehouse: 'Manage inventory and stock movements',
       finance: 'View AR/AP and financial reports',
       compliance: 'Manage licenses and MSDS',
+      crn: 'Manage patients, assign education, create nursing tasks',
+      patient: 'View health records, education content, and vitals',
     },
   },
   dashboard: {
@@ -1058,6 +1076,7 @@ export default {
       warehouse: 'Warehouse Manager', finance: 'Finance', compliance: 'Compliance Officer',
       admin: 'System Administrator', manager: 'Manager',
       rd: 'R&D Engineer', mfg: 'MFG Engineer', qa: 'QA Engineer',
+      crn: 'Clinical Research Nurse', patient: 'Patient',
     },
     permissions: 'Permissions',
     accessControl: 'Access Control',
