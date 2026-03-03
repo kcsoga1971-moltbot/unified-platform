@@ -99,8 +99,6 @@ const demoRoles = [
   { code: 'warehouse', icon: '📦', email: 'liu.cangku@company.com' },
   { code: 'finance', icon: '💰', email: 'zhang.caiwu@company.com' },
   { code: 'admin', icon: '⚙️', email: 'admin@company.com' },
-  { code: 'crn', icon: '🏥', email: 'chen.crn@hospital.com' },
-  { code: 'patient', icon: '🛏️', email: 'wang.patient@hospital.com' },
 ]
 
 const form = ref({

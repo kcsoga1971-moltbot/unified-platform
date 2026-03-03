@@ -3,13 +3,11 @@ import { ref, computed } from 'vue'
 
 const RDM_ROLES = ['boss', 'manager', 'rd', 'mfg', 'qa', 'admin']
 const SALES_ROLES = ['boss', 'salesMgr', 'salesRep', 'purchMgr', 'purchaser', 'warehouse', 'finance', 'compliance', 'admin']
-const CRN_ROLES = ['crn', 'patient', 'admin']
 
 const DEFAULT_PLATFORM = {
   boss: 'rdm', manager: 'rdm', rd: 'rdm', mfg: 'rdm', qa: 'rdm',
   salesMgr: 'sales', salesRep: 'sales', purchMgr: 'sales',
   purchaser: 'sales', warehouse: 'sales', finance: 'sales', compliance: 'sales',
-  crn: 'crn', patient: 'crn',
   admin: 'rdm',
 }
 
@@ -26,8 +24,6 @@ const DEMO_USERS = [
   { id: 'u10', name: '张财务', email: 'zhang.caiwu@company.com', role: 'finance' },
   { id: 'u11', name: '陈合规', email: 'chen.hegui@company.com', role: 'compliance' },
   { id: 'u12', name: '系统管理员', email: 'admin@company.com', role: 'admin' },
-  { id: 'u13', name: '陈护理师', email: 'chen.crn@hospital.com', role: 'crn' },
-  { id: 'u14', name: '王病患', email: 'wang.patient@hospital.com', role: 'patient' },
 ]
 
 export const useUserStore = defineStore('unified_user', () => {
@@ -39,7 +35,6 @@ export const useUserStore = defineStore('unified_user', () => {
   const isLoggedIn = computed(() => isAuthenticated.value)
   const canAccessRdm = computed(() => RDM_ROLES.includes(currentRole.value))
   const canAccessSales = computed(() => SALES_ROLES.includes(currentRole.value))
-  const canAccessCrn = computed(() => CRN_ROLES.includes(currentRole.value))
 
   // RDM permission helpers (used by rdm views via rdm-user store)
   function canViewAllProjects() {
@@ -108,9 +103,6 @@ export const useUserStore = defineStore('unified_user', () => {
     } else if (platform === 'sales' && canAccessSales.value) {
       activePlatform.value = 'sales'
       localStorage.setItem('unified_platform', 'sales')
-    } else if (platform === 'crn' && canAccessCrn.value) {
-      activePlatform.value = 'crn'
-      localStorage.setItem('unified_platform', 'crn')
     }
   }
 
@@ -154,7 +146,7 @@ export const useUserStore = defineStore('unified_user', () => {
 
   return {
     currentUser, isAuthenticated, isLoggedIn, currentRole,
-    activePlatform, canAccessRdm, canAccessSales, canAccessCrn,
+    activePlatform, canAccessRdm, canAccessSales,
     canViewAllProjects, canSeeTeamTasks, canSeeGantt, canAccess,
     login, loginByRole, logout, switchPlatform, initFromStorage,
   }

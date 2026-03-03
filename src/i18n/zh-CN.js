@@ -8,9 +8,6 @@ export default {
     integrationCenter: '整合中心',
     switchToRd: '切換至研發中心',
     switchToOps: '切換至營運中心',
-    crnCenter: '護理管理中心',
-    patientCenter: '病患服務中心',
-    switchToCrn: '切換至護理中心',
     unifiedDashboard: '統一看板',
     productLifecycle: '產品生命週期',
     rdProgress: '研發進度',
@@ -183,17 +180,6 @@ export default {
     aiInsights: 'AI分析',
     admin: '管理',
     userMgmt: '用户管理',
-    // 護理中心 (CRN)
-    crnPatients: '病患管理',
-    crnCreateTask: '建立任務',
-    crnAssignEducation: '衛教指派',
-    crnCalendar: '行事曆',
-    crnNotifications: '通知中心',
-    // 病患端
-    patientHistory: '健康紀錄',
-    patientEducation: '衛教資料',
-    patientBodyMap: '身體地圖',
-    patientVitals: '生命徵象',
     // 整合
     unifiedDashboard: '统一看板',
     productLifecycle: '产品生命周期',
@@ -245,7 +231,6 @@ export default {
       salesMgr: '销售经理', salesRep: '销售员',
       purchMgr: '采购经理', purchaser: '采购员',
       warehouse: '仓库管理员', finance: '财务', compliance: '合规专员',
-      crn: '护理师', patient: '病患',
     },
     roleDescriptions: {
       boss: '全局总览 — 研发进度 + 销售业绩 + P&L报告',
@@ -261,8 +246,6 @@ export default {
       warehouse: '管理库存和出入库',
       finance: '查看应收应付和财务报表',
       compliance: '管理证照和MSDS',
-      crn: '管理病患、指派衛教、建立護理任務',
-      patient: '查看健康紀錄、衛教內容、生命徵象',
     },
   },
   // === 研發平台 keys ===
@@ -551,7 +534,6 @@ export default {
       boss: '总经理', salesMgr: '销售经理', salesRep: '销售员', purchMgr: '采购经理',
       purchaser: '采购员', warehouse: '仓库管理员', finance: '财务', compliance: '合规专员', admin: '系统管理员',
       manager: '主管', rd: '研发工程师', mfg: '制造工程师', qa: '品质工程师',
-      crn: '护理师', patient: '病患',
     },
     permissions: '权限配置', accessControl: '访问控制', onlineUsers: '在线用户',
     searchPlaceholder: '搜索用户名或姓名',

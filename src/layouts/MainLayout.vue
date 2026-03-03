@@ -4,32 +4,24 @@
     <aside class="sidebar" :class="[{ collapsed: sidebarCollapsed }, `sidebar--${currentPlatform}`]">
       <!-- Logo + Platform Switcher -->
       <div class="sidebar-header">
-        <div class="logo-icon">{{ platformIcon }}</div>
+        <div class="logo-icon">{{ currentPlatform === 'rdm' ? 'RDM' : 'OPS' }}</div>
         <span v-if="!sidebarCollapsed" class="logo-text">
-          {{ platformLabel }}
+          {{ currentPlatform === 'rdm' ? $t('unified.rdCenter') : $t('unified.opsCenter') }}
         </span>
       </div>
 
       <!-- Platform switch buttons -->
       <div v-if="!sidebarCollapsed && canSwitchPlatform" class="platform-switch">
         <button
-          v-if="userStore.canAccessRdm"
           class="switch-btn"
           :class="{ active: currentPlatform === 'rdm' }"
           @click="goToPlatform('rdm')"
         >RDM</button>
         <button
-          v-if="userStore.canAccessSales"
           class="switch-btn"
           :class="{ active: currentPlatform === 'sales' }"
           @click="goToPlatform('sales')"
         >OPS</button>
-        <button
-          v-if="userStore.canAccessCrn"
-          class="switch-btn"
-          :class="{ active: currentPlatform === 'crn' || currentPlatform === 'patient' }"
-          @click="goToPlatform('crn')"
-        >CRN</button>
       </div>
 
       <!-- User role badge -->
@@ -42,7 +34,7 @@
         :default-active="activeMenu"
         :collapse="sidebarCollapsed"
         :collapse-transition="false"
-        :background-color="sidebarBgColor"
+        :background-color="currentPlatform === 'rdm' ? '#1e293b' : '#1a237e'"
         text-color="#94a3b8"
         active-text-color="#ffffff"
         class="sidebar-menu"
@@ -228,72 +220,6 @@
             <template #title>{{ $t('nav.settings') }}</template>
           </el-menu-item>
         </template>
-
-        <!-- ===== CRN MENU (護理師端) ===== -->
-        <template v-if="currentPlatform === 'crn'">
-          <el-menu-item index="/crn/dashboard">
-            <el-icon><DataAnalysis /></el-icon>
-            <template #title>{{ $t('nav.dashboard') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/crn/patients">
-            <el-icon><User /></el-icon>
-            <template #title>{{ $t('nav.crnPatients') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/crn/tasks/create">
-            <el-icon><EditPen /></el-icon>
-            <template #title>{{ $t('nav.crnCreateTask') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/crn/assign-education">
-            <el-icon><Reading /></el-icon>
-            <template #title>{{ $t('nav.crnAssignEducation') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/crn/calendar">
-            <el-icon><Calendar /></el-icon>
-            <template #title>{{ $t('nav.crnCalendar') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/crn/notifications">
-            <el-icon><Bell /></el-icon>
-            <template #title>{{ $t('nav.crnNotifications') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/crn/settings">
-            <el-icon><Setting /></el-icon>
-            <template #title>{{ $t('nav.settings') }}</template>
-          </el-menu-item>
-        </template>
-
-        <!-- ===== PATIENT MENU (病患端) ===== -->
-        <template v-if="currentPlatform === 'patient'">
-          <el-menu-item index="/patient/dashboard">
-            <el-icon><DataAnalysis /></el-icon>
-            <template #title>{{ $t('nav.dashboard') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/patient/history">
-            <el-icon><Document /></el-icon>
-            <template #title>{{ $t('nav.patientHistory') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/patient/education">
-            <el-icon><Reading /></el-icon>
-            <template #title>{{ $t('nav.patientEducation') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/patient/body-map">
-            <el-icon><Location /></el-icon>
-            <template #title>{{ $t('nav.patientBodyMap') }}</template>
-          </el-menu-item>
-
-          <el-menu-item index="/patient/vitals">
-            <el-icon><TrendCharts /></el-icon>
-            <template #title>{{ $t('nav.patientVitals') }}</template>
-          </el-menu-item>
-        </template>
       </el-menu>
 
       <div class="sidebar-collapse-btn" @click="toggleSidebar">
@@ -306,7 +232,7 @@
       <header class="header">
         <div class="header-left">
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item>{{ platformLabel }}</el-breadcrumb-item>
+            <el-breadcrumb-item>{{ currentPlatform === 'rdm' ? $t('unified.rdCenter') : $t('unified.opsCenter') }}</el-breadcrumb-item>
             <el-breadcrumb-item v-for="crumb in breadcrumbs" :key="crumb.label">{{ crumb.label }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
@@ -334,7 +260,7 @@
 
       <main class="content">
         <router-view v-slot="{ Component }">
-          <keep-alive :include="['RdmDashboard', 'SalesDashboard', 'CrnDashboard', 'PatientDashboard', 'ProjectList']">
+          <keep-alive :include="['RdmDashboard', 'SalesDashboard', 'ProjectList']">
             <component :is="Component" />
           </keep-alive>
         </router-view>
@@ -368,35 +294,12 @@ const canAccess = (section) => userStore.canAccess(section)
 
 const currentPlatform = computed(() => {
   if (route.path.startsWith('/sales')) return 'sales'
-  if (route.path.startsWith('/crn')) return 'crn'
-  if (route.path.startsWith('/patient')) return 'patient'
   return 'rdm'
 })
 
-const platformIcon = computed(() => {
-  const map = { rdm: 'RDM', sales: 'OPS', crn: 'CRN', patient: 'PAT' }
-  return map[currentPlatform.value] || 'RDM'
-})
-
-const platformLabel = computed(() => {
-  const map = {
-    rdm: t('unified.rdCenter'),
-    sales: t('unified.opsCenter'),
-    crn: t('unified.crnCenter'),
-    patient: t('unified.patientCenter'),
-  }
-  return map[currentPlatform.value] || t('unified.rdCenter')
-})
-
-const canSwitchPlatform = computed(() => {
-  const accessible = [userStore.canAccessRdm, userStore.canAccessSales, userStore.canAccessCrn].filter(Boolean)
-  return accessible.length > 1
-})
-
-const sidebarBgColor = computed(() => {
-  const map = { rdm: '#1e293b', sales: '#1a237e', crn: '#1b5e20', patient: '#4e342e' }
-  return map[currentPlatform.value] || '#1e293b'
-})
+const canSwitchPlatform = computed(
+  () => userStore.canAccessRdm && userStore.canAccessSales
+)
 
 const userInitials = computed(() => {
   const name = currentUser.value?.name || 'U'
@@ -409,7 +312,6 @@ const roleBadgeType = computed(() => {
     rd: 'primary', mfg: 'success', qa: 'info',
     salesMgr: 'warning', salesRep: 'primary', purchMgr: 'success',
     purchaser: 'info', warehouse: '', finance: 'info', compliance: '',
-    crn: 'success', patient: 'info',
   }
   return map[currentRole.value] || 'primary'
 })
@@ -419,7 +321,6 @@ const roleLabel = computed(() => {
     boss: 'Boss', manager: '主管', rd: '研发', mfg: '制造', qa: '品质', admin: 'Admin',
     salesMgr: '销售经理', salesRep: '销售员', purchMgr: '采购经理',
     purchaser: '采购员', warehouse: '仓库', finance: '财务', compliance: '合规',
-    crn: '护理师', patient: '病患',
   }
   return map[currentRole.value] || currentRole.value
 })
@@ -441,9 +342,6 @@ const activeMenu = computed(() => {
   if (path.startsWith('/sales/customers')) return '/sales/customers'
   if (path.startsWith('/sales/products')) return '/sales/products'
   if (path.startsWith('/sales/orders')) return '/sales/orders'
-  if (path.startsWith('/crn/patients')) return '/crn/patients'
-  if (path.startsWith('/crn/tasks')) return '/crn/tasks/create'
-  if (path.startsWith('/patient/education')) return '/patient/education'
   return path
 })
 
@@ -480,15 +378,6 @@ const breadcrumbs = computed(() => {
   else if (path.includes('/accounts-payable')) crumbs.push({ label: t('nav.accountsPayable') })
   else if (path.includes('/profit-analysis')) crumbs.push({ label: t('nav.profitAnalysis') })
   else if (path.includes('/admin/users')) crumbs.push({ label: t('nav.userManagement') })
-  else if (path.includes('/crn/patients')) crumbs.push({ label: t('nav.crnPatients') })
-  else if (path.includes('/crn/tasks')) crumbs.push({ label: t('nav.crnCreateTask') })
-  else if (path.includes('/crn/assign-education')) crumbs.push({ label: t('nav.crnAssignEducation') })
-  else if (path.includes('/crn/calendar')) crumbs.push({ label: t('nav.crnCalendar') })
-  else if (path.includes('/crn/notifications')) crumbs.push({ label: t('nav.crnNotifications') })
-  else if (path.includes('/patient/history')) crumbs.push({ label: t('nav.patientHistory') })
-  else if (path.includes('/patient/education')) crumbs.push({ label: t('nav.patientEducation') })
-  else if (path.includes('/patient/body-map')) crumbs.push({ label: t('nav.patientBodyMap') })
-  else if (path.includes('/patient/vitals')) crumbs.push({ label: t('nav.patientVitals') })
   return crumbs
 })
 
@@ -498,13 +387,11 @@ function toggleSidebar() {
 
 function goToPlatform(platform) {
   userStore.switchPlatform(platform)
-  const dashboardMap = {
-    rdm: 'RdmDashboard',
-    sales: 'SalesDashboard',
-    crn: 'CrnDashboard',
-    patient: 'PatientDashboard',
+  if (platform === 'rdm') {
+    router.push({ name: 'RdmDashboard' })
+  } else {
+    router.push({ name: 'SalesDashboard' })
   }
-  router.push({ name: dashboardMap[platform] || 'RdmDashboard' })
 }
 
 function handleUserCommand(command) {
@@ -512,8 +399,7 @@ function handleUserCommand(command) {
     userStore.logout()
     router.push({ name: 'Login' })
   } else if (command === 'settings') {
-    const settingsMap = { rdm: 'RdmSettings', sales: 'SalesSettings', crn: 'CrnSettings' }
-    const name = settingsMap[currentPlatform.value] || 'RdmSettings'
+    const name = currentPlatform.value === 'rdm' ? 'RdmSettings' : 'SalesSettings'
     router.push({ name })
   }
 }
@@ -539,22 +425,6 @@ function handleUserCommand(command) {
 
 .sidebar--sales {
   background: #1a237e;
-}
-
-.sidebar--crn {
-  background: #1b5e20;
-}
-
-.sidebar--patient {
-  background: #4e342e;
-}
-
-.sidebar--crn .logo-icon {
-  background: #2e7d32;
-}
-
-.sidebar--patient .logo-icon {
-  background: #6d4c41;
 }
 
 .sidebar.collapsed {

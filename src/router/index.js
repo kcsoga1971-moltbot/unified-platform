@@ -3,7 +3,6 @@ import { useUserStore } from '../stores/user.js'
 
 const RDM_ROLES = ['boss', 'manager', 'rd', 'mfg', 'qa', 'admin']
 const SALES_ROLES = ['boss', 'salesMgr', 'salesRep', 'purchMgr', 'purchaser', 'warehouse', 'finance', 'compliance', 'admin']
-const CRN_ROLES = ['crn', 'patient', 'admin']
 
 const routes = [
   {
@@ -90,38 +89,6 @@ const routes = [
       { path: 'settings', name: 'SalesSettings', component: () => import('../views/sales/settings/Settings.vue') },
     ],
   },
-  // CRN Platform (護理師端)
-  {
-    path: '/crn',
-    component: () => import('../layouts/MainLayout.vue'),
-    meta: { requiresAuth: true, platform: 'crn' },
-    children: [
-      { path: '', redirect: '/crn/dashboard' },
-      { path: 'dashboard', name: 'CrnDashboard', component: () => import('../views/crn/dashboard/Dashboard.vue') },
-      { path: 'patients', name: 'CrnPatientList', component: () => import('../views/crn/patient/PatientList.vue') },
-      { path: 'patients/:id', name: 'CrnSubjectDetail', component: () => import('../views/crn/patient/SubjectDetail.vue'), props: true },
-      { path: 'tasks/create', name: 'CrnCreateTask', component: () => import('../views/crn/task/CreateTask.vue') },
-      { path: 'assign-education', name: 'CrnAssignEducation', component: () => import('../views/crn/education/AssignEducation.vue') },
-      { path: 'calendar', name: 'CrnCalendar', component: () => import('../views/crn/schedule/Calendar.vue') },
-      { path: 'notifications', name: 'CrnNotifications', component: () => import('../views/crn/notification/Notifications.vue') },
-      { path: 'settings', name: 'CrnSettings', component: () => import('../views/crn/settings/Settings.vue') },
-    ],
-  },
-  // Patient Platform (病患端)
-  {
-    path: '/patient',
-    component: () => import('../layouts/MainLayout.vue'),
-    meta: { requiresAuth: true, platform: 'patient' },
-    children: [
-      { path: '', redirect: '/patient/dashboard' },
-      { path: 'dashboard', name: 'PatientDashboard', component: () => import('../views/crn/patient-portal/Dashboard.vue') },
-      { path: 'history', name: 'PatientHealthHistory', component: () => import('../views/crn/patient-portal/HealthHistory.vue') },
-      { path: 'education', name: 'PatientEducation', component: () => import('../views/crn/patient-portal/EducationList.vue') },
-      { path: 'education/:id', name: 'PatientEducationDetail', component: () => import('../views/crn/patient-portal/EducationDetail.vue'), props: true },
-      { path: 'body-map', name: 'PatientBodyMap', component: () => import('../views/crn/patient-portal/BodyMap.vue') },
-      { path: 'vitals', name: 'PatientVitals', component: () => import('../views/crn/patient-portal/Vitals.vue') },
-    ],
-  },
   { path: '/', redirect: '/auth/login' },
   { path: '/:pathMatch(.*)*', redirect: '/auth/login' },
 ]
@@ -145,8 +112,7 @@ router.beforeEach((to, from, next) => {
 
   if ((to.name === 'Login' || to.name === 'Register') && isAuth) {
     const platform = userStore.activePlatform
-    const dashboardMap = { sales: 'SalesDashboard', crn: 'CrnDashboard', patient: 'PatientDashboard' }
-    next({ name: dashboardMap[platform] || 'RdmDashboard' })
+    next({ name: platform === 'sales' ? 'SalesDashboard' : 'RdmDashboard' })
     return
   }
 
@@ -157,14 +123,6 @@ router.beforeEach((to, from, next) => {
   }
   if (to.meta.platform === 'sales' && isAuth && !SALES_ROLES.includes(role)) {
     next({ name: 'RdmDashboard' })
-    return
-  }
-  if (to.meta.platform === 'crn' && isAuth && !CRN_ROLES.includes(role)) {
-    next({ name: 'RdmDashboard' })
-    return
-  }
-  if (to.meta.platform === 'patient' && isAuth && !['patient', 'admin'].includes(role)) {
-    next({ name: 'CrnDashboard' })
     return
   }
 
